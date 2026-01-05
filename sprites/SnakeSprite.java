@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class SimpleSprite implements DisplayableSprite {
+public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingSprite {
 
 	private static Image image;	
 	private double centerX = 0;
@@ -15,7 +15,7 @@ public class SimpleSprite implements DisplayableSprite {
 
 	private final double VELOCITY = 200;
 
-	public SimpleSprite(double centerX, double centerY, double height, double width) {
+	public SnakeSprite(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
 		
 		this.height = height;
@@ -23,7 +23,7 @@ public class SimpleSprite implements DisplayableSprite {
 	}
 
 	
-	public SimpleSprite(double centerX, double centerY) {
+	public SnakeSprite(double centerX, double centerY) {
 
 		this.centerX = centerX;
 		this.centerY = centerY;
@@ -121,6 +121,69 @@ public class SimpleSprite implements DisplayableSprite {
 	@Override
 	public void setDispose(boolean dispose) {
 		this.dispose = true;
+	}
+
+
+	@Override
+	public void setCenterX(double centerX) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setCenterY(double centerY) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public double getVelocityX() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public double getVelocityY() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public void setVelocityX(double pixelsPerSecond) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setVelocityY(double pixelsPerSecond) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public long getScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public String getProximityMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean getIsAtExit() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
