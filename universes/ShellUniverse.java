@@ -9,13 +9,27 @@ public class ShellUniverse implements Universe {
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
 	public ShellUniverse () {
+		
+		double screenMinX = AnimationFrame.screenWidth / -2;
+		double screenMinY = AnimationFrame.screenHeight / -2;
+		double screenMaxX = AnimationFrame.screenWidth / 2;
+		double screenMaxY = AnimationFrame.screenHeight / 2;
 
 		this.setXCenter(0);
 		this.setYCenter(0);
 		player1 = new SnakeSprite(0,0);
 		sprites.add(player1);
+		
+		        //top
+				sprites.add(new BarrierSprite(screenMinX,screenMinY, screenMaxX , screenMinY + 16, true));
+				//bottom
+				sprites.add(new BarrierSprite(screenMinX,screenMaxY - 16, screenMaxX , screenMaxY, true));
+				//left
+				sprites.add(new BarrierSprite(screenMinX,screenMinY, screenMinX + 16 , screenMaxY, true));
+				//right
+				sprites.add(new BarrierSprite(screenMaxX - 16,screenMinY, screenMaxX , screenMaxY, true));		
+			}
 			
-	}
 
 	public double getScale() {
 		return 1;
