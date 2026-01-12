@@ -7,13 +7,20 @@ import javax.imageio.ImageIO;
 public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingSprite {
 
 	private static Image image;	
-	private double centerX = 0;
-	private double centerY = 0;
+	private double centerX;
+	private double centerY;
 	private double width = 50;
 	private double height = 50;
-	private boolean dispose = false;	
+	private boolean dispose = false;
+	private enum Direction {LEFT, UP, RIGHT, DOWN};
+	private Direction direction = Direction.RIGHT;
+	
+	
+	private double velocityX = 0;
+	private double velocityY = 0;
 
-	private final double VELOCITY = 200;
+	private double speed = 150;
+	private static final double MAX_SPEED = 250;
 
 	public SnakeSprite(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
@@ -27,6 +34,9 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 
 		this.centerX = centerX;
 		this.centerY = centerY;
+		
+		velocityX = speed;
+		velocityY = 0;
 		
 		if (image == null) {
 			try {
@@ -87,34 +97,53 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 
 	public void update(Universe universe, long actual_delta_time) {
 		
-		double velocityX = 0;
-		double velocityY = 0;
-		
 		KeyboardInput keyboard = KeyboardInput.getKeyboard();
 
-		//LEFT	
-		if (keyboard.keyDown(37)) {
-			velocityX = -VELOCITY;
-		}
-		//UP
-		if (keyboard.keyDown(38)) {
-			velocityY = -VELOCITY;			
-		}
-		// RIGHT
-		if (keyboard.keyDown(39)) {
-			velocityX += VELOCITY;
-		}
-		// DOWN
-		if (keyboard.keyDown(40)) {
-			velocityY += VELOCITY;			
-		}
-
-		double deltaX = actual_delta_time * 0.001 * velocityX;
-        this.centerX += deltaX;
+		if (keyboard.keyDown(37) && direction != Direction.RIGHT) 
+            direction = Direction.LEFT;
 		
-		double deltaY = actual_delta_time * 0.001 * velocityY;
-    	this.centerY += deltaY;
+		 else if (keyboard.keyDown(38) && direction != Direction.DOWN) {
+            direction = Direction.UP;
+		
+		} else if (keyboard.keyDown(39) && direction != Direction.LEFT) {
+            direction = Direction.RIGHT;
+		
+		} else if (keyboard.keyDown(40) && direction != Direction.UP) {
+            direction = Direction.DOWN;
+		
+		}
+		
+		switch (direction) {
+        case LEFT:
+            velocityX = -speed;
+            velocityY = 0;
+            break;
+        case RIGHT:
+            velocityX = speed;
+            velocityY = 0;
+            break;
+        case UP:
+            velocityX = 0;
+            velocityY = -speed;
+            break;
+        case DOWN:
+            velocityX = 0;
+            velocityY = speed;
+            break;
+    }
 
+        centerX += velocityX * actual_delta_time * 0.001;
+		
+        centerY += velocityY * actual_delta_time * 0.001;
+
+	}
+	
+	public void increaseSpeed(double amount) {
+	    speed += amount;
+
+	    if (speed > MAX_SPEED) {
+	        speed = MAX_SPEED;
+	    }
 	}
 
 
