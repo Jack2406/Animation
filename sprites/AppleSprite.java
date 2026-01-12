@@ -19,7 +19,7 @@ public class AppleSprite implements DisplayableSprite  {
 		
 		if (image == null && visible) {
 			try {
-				image = ImageIO.read(new File("res/coin.png"));
+				image = ImageIO.read(new File("res/apple.jpg"));
 				System.out.println(this.getClass().toString());
 			}
 			catch (IOException e) {

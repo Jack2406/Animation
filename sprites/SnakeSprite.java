@@ -1,6 +1,7 @@
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -14,6 +15,8 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	private boolean dispose = false;
 	private enum Direction {LEFT, UP, RIGHT, DOWN};
 	private Direction direction = Direction.RIGHT;
+	
+	private ArrayList<DisplayableSprite> bodySprites = new ArrayList<DisplayableSprite>();
 	
 	
 	private double velocityX = 0;
