@@ -138,7 +138,33 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
         centerX += velocityX * actual_delta_time * 0.001;
 		
         centerY += velocityY * actual_delta_time * 0.001;
+        
+        double deltaX = actual_delta_time * 0.001 * velocityX;
+		double deltaY = actual_delta_time * 0.001 * velocityY;
+		
+        
+        boolean collidingBarrierX = checkCollisionWithBarrier(universe.getSprites(), deltaX, 0);
+		boolean collidingBarrierY = checkCollisionWithBarrier(universe.getSprites(), 0, deltaY);
 
+	}
+	
+	private boolean checkCollisionWithBarrier(ArrayList<DisplayableSprite> sprites, double deltaX, double deltaY) {
+
+		//deltaX and deltaY represent the potential change in position
+		boolean colliding = false;
+
+		for (DisplayableSprite sprite : sprites) {
+			if (sprite instanceof BarrierSprite) {
+				if (CollisionDetection.overlaps(this.getMinX() + deltaX, this.getMinY() + deltaY, 
+						this.getMaxX()  + deltaX, this.getMaxY() + deltaY, 
+						sprite.getMinX(),sprite.getMinY(), 
+						sprite.getMaxX(), sprite.getMaxY())) {
+					colliding = true;
+					break;					
+				}
+			}
+		}		
+		return colliding;		
 	}
 	
 	public void increaseSpeed(double amount) {
