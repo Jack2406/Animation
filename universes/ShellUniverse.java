@@ -7,6 +7,7 @@ public class ShellUniverse implements Universe {
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	private ArrayList<Background> backgrounds = new ArrayList<Background>();
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
+	
 
 	public ShellUniverse () {
 		
@@ -72,11 +73,14 @@ public class ShellUniverse implements Universe {
 	public void update(Animation animation, long actual_delta_time) {
 
 		for (int i = 0; i < sprites.size(); i++) {
-			DisplayableSprite sprite = sprites.get(i);
-			sprite.update(this, actual_delta_time);
-    	} 
-		
-		disposeSprites();
+		    DisplayableSprite sprite = sprites.get(i);
+		    sprite.update(this, actual_delta_time);
+
+		    if (sprite instanceof SnakeSprite && sprite.getDispose()) {
+		        complete = true;
+		        break;
+		    }
+		}
 		
 	}
 	

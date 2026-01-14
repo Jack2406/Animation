@@ -17,7 +17,7 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	private Direction direction = Direction.RIGHT;
 	
 	private ArrayList<DisplayableSprite> bodySprites = new ArrayList<DisplayableSprite>();
-	
+	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	
 	private double velocityX = 0;
 	private double velocityY = 0;
@@ -135,25 +135,26 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
             break;
     }
 
-        centerX += velocityX * actual_delta_time * 0.001;
-		
-        centerY += velocityY * actual_delta_time * 0.001;
-        
         double deltaX = actual_delta_time * 0.001 * velocityX;
 		double deltaY = actual_delta_time * 0.001 * velocityY;
 		
-        
-        boolean collidingBarrierX = checkCollisionWithBarrier(universe.getSprites(), deltaX, 0);
-		boolean collidingBarrierY = checkCollisionWithBarrier(universe.getSprites(), 0, deltaY);
+		if (checkCollisionWithBarrier(universe.getSprites(), deltaX, deltaY)) {
+            dispose = true;
+            return;
+        }
+		
+		centerX += deltaX;
+        centerY += deltaY;
 
 	}
+
 	
-	private boolean checkCollisionWithBarrier(ArrayList<DisplayableSprite> sprites, double deltaX, double deltaY) {
+	private boolean checkCollisionWithBarrier(ArrayList<DisplayableSprite> headsprites, double deltaX, double deltaY) {
 
 		//deltaX and deltaY represent the potential change in position
 		boolean colliding = false;
 
-		for (DisplayableSprite sprite : sprites) {
+		for (DisplayableSprite sprite : headsprites) {
 			if (sprite instanceof BarrierSprite) {
 				if (CollisionDetection.overlaps(this.getMinX() + deltaX, this.getMinY() + deltaY, 
 						this.getMaxX()  + deltaX, this.getMaxY() + deltaY, 
@@ -184,14 +185,14 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 
 	@Override
 	public void setCenterX(double centerX) {
-		// TODO Auto-generated method stub
+		this.centerX = centerX;
 		
 	}
 
 
 	@Override
 	public void setCenterY(double centerY) {
-		// TODO Auto-generated method stub
+		this.centerY = centerY;
 		
 	}
 
@@ -199,27 +200,27 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	@Override
 	public double getVelocityX() {
 		// TODO Auto-generated method stub
-		return 0;
+		return velocityX;
 	}
 
 
 	@Override
 	public double getVelocityY() {
 		// TODO Auto-generated method stub
-		return 0;
+		return velocityY;
 	}
 
 
 	@Override
 	public void setVelocityX(double pixelsPerSecond) {
-		// TODO Auto-generated method stub
+		velocityX = pixelsPerSecond;
 		
 	}
 
 
 	@Override
 	public void setVelocityY(double pixelsPerSecond) {
-		// TODO Auto-generated method stub
+		velocityY = pixelsPerSecond;
 		
 	}
 
