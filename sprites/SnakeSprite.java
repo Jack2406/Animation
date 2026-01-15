@@ -43,7 +43,7 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 		
 		if (image == null) {
 			try {
-				image = ImageIO.read(new File("res/simple-sprite.png"));
+				image = ImageIO.read(new File("res/snakehead.png"));
 			}
 			catch (IOException e) {
 				System.out.println(e.toString());
