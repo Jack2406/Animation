@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 
 public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingSprite {
 
-	private static Image image;	
+	private static Image[] images;	
 	private double centerX;
 	private double centerY;
 	private double width = 50;
@@ -15,6 +15,11 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	private boolean dispose = false;
 	private enum Direction {LEFT, UP, RIGHT, DOWN};
 	private Direction direction = Direction.RIGHT;
+	private static Image down;
+	private static Image up;
+	private static Image right;
+	private static Image left;
+	private static final int IMAGES_IN_CYCLE = 2;
 	
 	private ArrayList<DisplayableSprite> bodySprites = new ArrayList<DisplayableSprite>();
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
@@ -22,8 +27,11 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	private double velocityX = 0;
 	private double velocityY = 0;
 
+	private long elapsedTime = 0;
 	private double speed = 150;
 	private static final double MAX_SPEED = 250;
+	private static final int PERIOD_LENGTH = 200;
+	
 
 	public SnakeSprite(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
@@ -41,21 +49,45 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 		velocityX = speed;
 		velocityY = 0;
 		
-		if (image == null) {
+		if (images == null) {
 			try {
-				image = ImageIO.read(new File("res/snakehead.png"));
+				images = new Image[4];
+				for (int i = 0; i < 4; i++) {
+					String path = String.format("res/snake/snake-%d.png", i);
+					images[i] = ImageIO.read(new File(path));
+				}
 			}
 			catch (IOException e) {
 				System.out.println(e.toString());
 			}		
-		}		
+		}
+		
+		right = images[1];
+		down = images[2];
+		left = images[3];
+		up = images[4];
 	}
 
 	public Image getImage() {
-		return image;
+		
+		long period = elapsedTime / PERIOD_LENGTH;
+		int image = (int) (period % IMAGES_IN_CYCLE);
+
+		if (image == 0) {
+			switch (direction) {
+			case UP:
+				return up;
+			case DOWN:
+				return down;
+			case LEFT:
+				return left;
+			case RIGHT:
+				return right;
+			}
+
+	    }
+		return null;
 	}
-	
-	//DISPLAYABLE
 	
 	public boolean getVisible() {
 		return true;
