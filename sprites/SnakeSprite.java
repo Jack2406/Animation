@@ -62,10 +62,10 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 			}		
 		}
 		
-		right = images[1];
-		down = images[2];
-		left = images[3];
-		up = images[4];
+		right = images[0];
+		down = images[1];
+		left = images[2];
+		up = images[3];
 	}
 
 	public Image getImage() {
@@ -198,6 +198,23 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 			}
 		}		
 		return colliding;		
+	}
+	
+	private AppleSprite checkCollisionWithApple(ArrayList<DisplayableSprite> sprites, double deltaX, double deltaY) {
+
+	    for (DisplayableSprite sprite : sprites) {
+	        if (sprite instanceof AppleSprite) {
+	            if (CollisionDetection.overlaps(
+	                    getMinX() + deltaX, getMinY() + deltaY,
+	                    getMaxX() + deltaX, getMaxY() + deltaY,
+	                    sprite.getMinX(), sprite.getMinY(),
+	                    sprite.getMaxX(), sprite.getMaxY())) {
+
+	                return (AppleSprite) sprite;
+	            }
+	        }
+	    }
+	    return null;
 	}
 	
 	public void increaseSpeed(double amount) {

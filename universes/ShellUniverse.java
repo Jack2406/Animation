@@ -18,7 +18,7 @@ public class ShellUniverse implements Universe {
 
 		this.setXCenter(0);
 		this.setYCenter(0);
-		player1 = new SnakeSprite(0,0);
+		player1 = new SnakeSprite(-550,0);
 		sprites.add(player1);
 		sprites.add(new AppleSprite(0,0));
 

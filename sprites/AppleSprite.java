@@ -11,8 +11,8 @@ public class AppleSprite implements DisplayableSprite  {
 	private boolean visible = true;
 	private double centerX = 0;
 	private double centerY = 0;
-	private double width = 50;
-	private double height = 50;
+	private double width = 40;
+	private double height = 40;
 	private boolean dispose = false;
 	
     public AppleSprite(double centerX, double centerY) {
