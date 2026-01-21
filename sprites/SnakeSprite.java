@@ -21,7 +21,7 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	private static Image left;
 	private static final int IMAGES_IN_CYCLE = 2;
 	
-	private ArrayList<DisplayableSprite> bodySprites = new ArrayList<DisplayableSprite>();
+	private ArrayList<BodySprite> bodySegments = new ArrayList<>();
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	
 	private double velocityX = 0;
@@ -29,8 +29,10 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 
 	private long elapsedTime = 0;
 	private double speed = 150;
-	private static final double MAX_SPEED = 250;
+	private static final double MAX_SPEED = 300;
 	private static final int PERIOD_LENGTH = 200;
+	
+	private long score = 0;
 	
 
 	public SnakeSprite(double centerX, double centerY, double height, double width) {
@@ -175,6 +177,13 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
             return;
         }
 		
+		AppleSprite apple = checkCollisionWithApple(universe.getSprites(), deltaX, deltaY);
+	    if (apple != null) {
+	        apple.setDispose(true);   
+	        increaseSpeed(25); 
+	        ShellAnimation.addScore(1);
+	    }
+		
 		centerX += deltaX;
         centerY += deltaY;
 
@@ -204,8 +213,7 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 
 	    for (DisplayableSprite sprite : sprites) {
 	        if (sprite instanceof AppleSprite) {
-	            if (CollisionDetection.overlaps(
-	                    getMinX() + deltaX, getMinY() + deltaY,
+	            if (CollisionDetection.overlaps(getMinX() + deltaX, getMinY() + deltaY,
 	                    getMaxX() + deltaX, getMaxY() + deltaY,
 	                    sprite.getMinX(), sprite.getMinY(),
 	                    sprite.getMaxX(), sprite.getMaxY())) {
@@ -277,7 +285,7 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	@Override
 	public long getScore() {
 		// TODO Auto-generated method stub
-		return 0;
+		return score;
 	}
 
 

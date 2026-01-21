@@ -72,16 +72,21 @@ public class ShellUniverse implements Universe {
 
 	public void update(Animation animation, long actual_delta_time) {
 
-		for (int i = 0; i < sprites.size(); i++) {
-		    DisplayableSprite sprite = sprites.get(i);
-		    sprite.update(this, actual_delta_time);
+	    for (int i = 0; i < sprites.size(); i++) {
+	        DisplayableSprite sprite = sprites.get(i);
+	        sprite.update(this, actual_delta_time);
 
-		    if (sprite instanceof SnakeSprite && sprite.getDispose()) {
-		        complete = true;
-		        break;
-		    }
-		}
-		
+	        if (sprite instanceof SnakeSprite && sprite.getDispose()) {
+	            complete = true;
+	            return;
+	        }
+	    }
+
+	    disposeSprites();
+	    if (!hasApple()) {
+	        spawnApple();
+	    }
+
 	}
 	
     protected void disposeSprites() {
@@ -106,6 +111,31 @@ public class ShellUniverse implements Universe {
     	if (disposalList.size() > 0) {
     		disposalList.clear();
     	}
+    }
+    
+    private boolean hasApple() {
+        for (DisplayableSprite sprite : sprites) {
+            if (sprite instanceof AppleSprite) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private void spawnApple() {
+
+        double margin = 40; // keeps apple away from walls
+
+        double minX = -AnimationFrame.screenWidth / 2 + margin;
+        double maxX =  AnimationFrame.screenWidth / 2 - margin;
+
+        double minY = -AnimationFrame.screenHeight / 2 + margin;
+        double maxY =  AnimationFrame.screenHeight / 2 - margin;
+
+        double x = minX + Math.random() * (maxX - minX);
+        double y = minY + Math.random() * (maxY - minY);
+
+        sprites.add(new AppleSprite(x, y));
     }
 
 

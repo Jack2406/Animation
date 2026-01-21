@@ -4,6 +4,23 @@ public class ShellAnimation implements Animation {
 	private Universe current = new ShellUniverse();
 	private boolean universeSwitched = false;
 	private boolean animationComplete = false;
+	private static int score = 0;
+	
+	public static int getScore() {
+		return score;
+	}
+	
+	public static void setScore(int score) {
+		ShellAnimation.score = score;
+	}
+
+	public static void addScore(int score) {
+		ShellAnimation.score += score;
+	}
+	
+	public void restart() {
+		score = 0;		
+	}
 	
 	public Universe getCurrentUniverse() {
 		return current;
@@ -40,5 +57,5 @@ public class ShellAnimation implements Animation {
 		animationComplete = true;
 		return current;
 	}
-	
+
 }

@@ -419,7 +419,7 @@ public class AnimationFrame extends JFrame {
 
 	protected void updateControls() {
 
-		this.lblTop.setText(String.format("Time: %9.3f;  offsetX: %5d; offsetY: %5d;  scale: %3.3f", total_elapsed_time / 1000.0, screenOffsetX, screenOffsetY, scale));
+		this.lblTop.setText(String.format("Score: %8d  Time: %9.3f",ShellAnimation.getScore(), total_elapsed_time / 1000.0));
 		if (universe != null) {
 			this.lblBottom.setText(universe.toString());
 		}

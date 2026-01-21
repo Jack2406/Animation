@@ -43,61 +43,61 @@ public class BodySprite implements DisplayableSprite {
 	@Override
 	public Image getImage() {
 		// TODO Auto-generated method stub
-		return null;
+		return image;
 	}
 
 	@Override
 	public boolean getVisible() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public double getMinX() {
 		// TODO Auto-generated method stub
-		return 0;
+		return centerX - (width / 2);
 	}
 
 	@Override
 	public double getMaxX() {
 		// TODO Auto-generated method stub
-		return 0;
+		return centerX + (width / 2);
 	}
 
 	@Override
 	public double getMinY() {
 		// TODO Auto-generated method stub
-		return 0;
+		return centerY - (height / 2);
 	}
 
 	@Override
 	public double getMaxY() {
 		// TODO Auto-generated method stub
-		return 0;
+		return centerY + (height / 2);
 	}
 
 	@Override
 	public double getHeight() {
 		// TODO Auto-generated method stub
-		return 0;
+		return height;
 	}
 
 	@Override
 	public double getWidth() {
 		// TODO Auto-generated method stub
-		return 0;
+		return width;
 	}
 
 	@Override
 	public double getCenterX() {
 		// TODO Auto-generated method stub
-		return 0;
+		return centerX;
 	}
 
 	@Override
 	public double getCenterY() {
 		// TODO Auto-generated method stub
-		return 0;
+		return centerY;
 	}
 
 	@Override
@@ -110,6 +110,11 @@ public class BodySprite implements DisplayableSprite {
 	public void setDispose(boolean dispose) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setPosition(double x, double y) {
+	    this.centerX = x;
+	    this.centerY = y;
 	}
 
 	@Override
