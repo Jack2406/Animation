@@ -7,7 +7,7 @@ public class ShellUniverse implements Universe {
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	private ArrayList<Background> backgrounds = new ArrayList<Background>();
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
-	
+//	BodySprite bodySegment = null;
 
 	public ShellUniverse () {
 		
@@ -72,7 +72,16 @@ public class ShellUniverse implements Universe {
 
 	public void update(Animation animation, long actual_delta_time) {
 
-	    for (int i = 0; i < sprites.size(); i++) {
+//		if (bodySegment == null) {
+//	    bodySegment = new BodySprite(player1.getCenterX(), player1.getCenterY());
+//		}
+//		if (CollisionDetection.overlaps(bodySegment, player1) == false) {
+//		    sprites.add(bodySegment);
+//		    bodySegment = null;
+//		}
+		
+
+		for (int i = 0; i < sprites.size(); i++) {
 	        DisplayableSprite sprite = sprites.get(i);
 	        sprite.update(this, actual_delta_time);
 
@@ -81,6 +90,8 @@ public class ShellUniverse implements Universe {
 	            return;
 	        }
 	    }
+	    
+	    
 
 	    disposeSprites();
 	    if (!hasApple()) {

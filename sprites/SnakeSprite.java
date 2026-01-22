@@ -91,6 +91,10 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 		return null;
 	}
 	
+	public ArrayList<BodySprite> getBodySegments() {
+        return bodySegments;
+    }
+	
 	public boolean getVisible() {
 		return true;
 	}
@@ -172,22 +176,26 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
         double deltaX = actual_delta_time * 0.001 * velocityX;
 		double deltaY = actual_delta_time * 0.001 * velocityY;
 		
-		if (checkCollisionWithBarrier(universe.getSprites(), deltaX, deltaY)) {
+		if (checkCollisionWithBarrier(universe.getSprites(), deltaX, deltaY) ||  checkCollisionWithBody(universe.getSprites(), deltaX, deltaY)) {
             dispose = true;
             return;
         }
+		
+		centerX += deltaX;
+        centerY += deltaY;
 		
 		AppleSprite apple = checkCollisionWithApple(universe.getSprites(), deltaX, deltaY);
 	    if (apple != null) {
 	        apple.setDispose(true);   
 	        increaseSpeed(25); 
 	        ShellAnimation.addScore(1);
+	        growBody();
 	    }
 		
-		centerX += deltaX;
-        centerY += deltaY;
+	    updateBodyPositions();
 
 	}
+	
 
 	
 	private boolean checkCollisionWithBarrier(ArrayList<DisplayableSprite> headsprites, double deltaX, double deltaY) {
@@ -224,6 +232,51 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	    }
 	    return null;
 	}
+	
+	private boolean checkCollisionWithBody(ArrayList<DisplayableSprite> sprites, double deltaX, double deltaY) {
+
+	    for (DisplayableSprite sprite : sprites) {
+	        if (sprite instanceof BodySprite) {
+	            if (CollisionDetection.overlaps(
+	                    getMinX() + deltaX, getMinY() + deltaY,
+	                    getMaxX() + deltaX, getMaxY() + deltaY,
+	                    sprite.getMinX(), sprite.getMinY(),
+	                    sprite.getMaxX(), sprite.getMaxY())) {
+	                return true; 
+	            }
+	        }
+	    }
+	    return false;
+	}
+	 
+	 private void growBody() {
+	       
+		 double bodyX = centerX;
+	     double bodyY = centerY;
+	        if (!bodySegments.isEmpty()) {
+	            BodySprite last = bodySegments.get(bodySegments.size()-1);
+	            bodyX = last.getCenterX();
+	            bodyY = last.getCenterY();
+	        }
+	        bodySegments.add(new BodySprite(bodyX, bodyY, width, height));
+	    }
+
+	    private void updateBodyPositions() {
+	        
+	    	if (bodySegments.isEmpty()) return;
+	        double prevX = centerX;
+	        double prevY = centerY;
+
+	        for (BodySprite body : bodySegments) {
+	           
+	        	double tempX = body.getCenterX();
+	            double tempY = body.getCenterY();
+	            body.setCenterX(prevX);
+	            body.setCenterY(prevY);
+	            prevX = tempX;
+	            prevY = tempY;
+	        }
+	    }
 	
 	public void increaseSpeed(double amount) {
 	    speed += amount;

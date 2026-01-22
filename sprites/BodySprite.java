@@ -123,4 +123,16 @@ public class BodySprite implements DisplayableSprite {
 		
 	}
 
+
+	public void setCenterX(double prevX) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void setCenterY(double prevY) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
