@@ -257,7 +257,7 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	private boolean checkCollisionWithBodySegments(double deltaX, double deltaY) {
 
        
-        if (bodySegments.size() < 10) {
+        if (bodySegments.size() < 8) {
             return false;
         }
 
