@@ -21,8 +21,10 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	private static Image left;
 	private static final int IMAGES_IN_CYCLE = 2;
 	
+	private final ArrayList<double[]> trail = new ArrayList<>();
+	 
 	private ArrayList<BodySprite> bodySegments = new ArrayList<>();
-	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
+
 	
 	private double velocityX = 0;
 	private double velocityY = 0;
@@ -68,7 +70,18 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 		down = images[1];
 		left = images[2];
 		up = images[3];
-	}
+		
+		for (int i = 0; i < 100; i++) {
+            trail.add(new double[] { centerX, centerY });
+        }
+    }
+	
+	 private int getTrailSpacing() {
+	        return Math.max(6, (int)(3000 / speed));
+	    }
+
+
+	
 
 	public Image getImage() {
 		
@@ -176,10 +189,18 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
         double deltaX = actual_delta_time * 0.001 * velocityX;
 		double deltaY = actual_delta_time * 0.001 * velocityY;
 		
-		if (checkCollisionWithBarrier(universe.getSprites(), deltaX, deltaY) ||  checkCollisionWithBody(universe.getSprites(), deltaX, deltaY)) {
+		if (checkCollisionWithBarrier(universe.getSprites(), deltaX, deltaY) ||  checkCollisionWithBodySegments(deltaX, deltaY)) {
             dispose = true;
             return;
         }
+		
+		 trail.add(0, new double[] { centerX, centerY });
+
+		    int spacing = getTrailSpacing();
+	        int maxTrailNeeded = (bodySegments.size() + 3) * spacing + 40;
+	        while (trail.size() > maxTrailNeeded) {
+	            trail.remove(trail.size() - 1);
+	        }
 		
 		centerX += deltaX;
         centerY += deltaY;
@@ -189,10 +210,10 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	        apple.setDispose(true);   
 	        increaseSpeed(25); 
 	        ShellAnimation.addScore(1);
-	        growBody();
+	        growBody(universe);
 	    }
 		
-	    updateBodyPositions();
+	    updateBodyPositionsFromTrail();
 
 	}
 	
@@ -233,51 +254,81 @@ public class SnakeSprite implements DisplayableSprite, MovableSprite, CollidingS
 	    return null;
 	}
 	
-	private boolean checkCollisionWithBody(ArrayList<DisplayableSprite> sprites, double deltaX, double deltaY) {
+	private boolean checkCollisionWithBodySegments(double deltaX, double deltaY) {
 
-	    for (DisplayableSprite sprite : sprites) {
-	        if (sprite instanceof BodySprite) {
-	            if (CollisionDetection.overlaps(
-	                    getMinX() + deltaX, getMinY() + deltaY,
-	                    getMaxX() + deltaX, getMaxY() + deltaY,
-	                    sprite.getMinX(), sprite.getMinY(),
-	                    sprite.getMaxX(), sprite.getMaxY())) {
-	                return true; 
-	            }
-	        }
-	    }
-	    return false;
-	}
-	 
-	 private void growBody() {
-	       
-		 double bodyX = centerX;
-	     double bodyY = centerY;
-	        if (!bodySegments.isEmpty()) {
-	            BodySprite last = bodySegments.get(bodySegments.size()-1);
-	            bodyX = last.getCenterX();
-	            bodyY = last.getCenterY();
-	        }
-	        bodySegments.add(new BodySprite(bodyX, bodyY, width, height));
-	    }
+       
+        if (bodySegments.size() < 10) {
+            return false;
+        }
 
-	    private void updateBodyPositions() {
-	        
-	    	if (bodySegments.isEmpty()) return;
-	        double prevX = centerX;
-	        double prevY = centerY;
+                int startIndex = 6;
+        if (startIndex >= bodySegments.size()) {
+            return false;
+        }
 
-	        for (BodySprite body : bodySegments) {
-	           
-	        	double tempX = body.getCenterX();
-	            double tempY = body.getCenterY();
-	            body.setCenterX(prevX);
-	            body.setCenterY(prevY);
-	            prevX = tempX;
-	            prevY = tempY;
-	        }
-	    }
+        for (int i = startIndex; i < bodySegments.size(); i++) {
+            BodySprite body = bodySegments.get(i);
+
+            if (CollisionDetection.overlaps(getMinX() + deltaX, getMinY() + deltaY,
+            		getMaxX() + deltaX, getMaxY() + deltaY,
+                    body.getMinX(), body.getMinY(),
+                    body.getMaxX(), body.getMaxY())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 	
+	private BodySprite.Direction directionFromDelta(double deltaX, double deltaY) {
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            return (deltaX > 0) ? BodySprite.Direction.RIGHT : BodySprite.Direction.LEFT;
+        }
+        return (deltaY > 0) ? BodySprite.Direction.DOWN : BodySprite.Direction.UP;
+    }
+
+    private void growBody(Universe universe) {
+
+        double spawnX = centerX;
+        double spawnY = centerY;
+
+        int spacing = getTrailSpacing();
+        int tailIndex = (bodySegments.size() + 1) * spacing;
+
+        if (tailIndex < trail.size()) {
+            spawnX = trail.get(tailIndex)[0];
+            spawnY = trail.get(tailIndex)[1];
+        }
+
+        BodySprite newSeg = new BodySprite(spawnX, spawnY, height, width);
+        
+        if (bodySegments.isEmpty()) {
+            newSeg.setDirection(directionFromDelta(velocityX, velocityY));
+        } else {
+            newSeg.setDirection(bodySegments.get(bodySegments.size() - 1).getDirection());
+        }
+        
+        bodySegments.add(newSeg);
+        universe.getSprites().add(newSeg);
+    }
+
+    private void updateBodyPositionsFromTrail() {
+
+        int spacing = getTrailSpacing();
+
+        for (int i = 0; i < bodySegments.size(); i++) {
+            int trailIndex = (i + 1) * spacing;
+
+            if (trailIndex < trail.size()) {
+                double[] p = trail.get(trailIndex);
+                bodySegments.get(i).setCenterX(p[0]);
+                bodySegments.get(i).setCenterY(p[1]);
+            }
+        }
+    }
+	    
+	   
+
 	public void increaseSpeed(double amount) {
 	    speed += amount;
 

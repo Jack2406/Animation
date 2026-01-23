@@ -135,7 +135,7 @@ public class ShellUniverse implements Universe {
     
     private void spawnApple() {
 
-        double margin = 40; // keeps apple away from walls
+        double margin = 40; 
 
         double minX = -AnimationFrame.screenWidth / 2 + margin;
         double maxX =  AnimationFrame.screenWidth / 2 - margin;
